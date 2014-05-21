@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<srcCode:sourceModel xmlns:srcCode="http://www.ibm.com/xmlns/prod/streams/spl/sourceCode" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <srcCode:sourceFile uri="com.ibm.streamsx.bytes.sample/Converter.spl">
+    <srcCode:compilationUnit>
+      <srcCode:splNamespace column="10" line="1" name="com.ibm.streamsx.bytes.sample"/>
+      <srcCode:useDirectives>
+        <srcCode:useDirective column="5" line="3" namespaceName="com.ibm.streamsx.bytes" tail="::*"/>
+      </srcCode:useDirectives>
+      <srcCode:definitions>
+        <srcCode:compositeDefinition endColumn="1" endLine="42" startColumn="1" startLine="4">
+          <srcCode:compositeHead column="1" line="4" name="Converter"/>
+          <srcCode:compositeBody>
+            <srcCode:graph>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="32" line="6" operatorName="Beacon">
+                  <srcCode:outputs>
+                    <srcCode:output column="25" index="0" line="6" streamName="ASCII" type="rstring ascii"/>
+                  </srcCode:outputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="8" name="iterations">
+                      <srcCode:value expr="1u"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="10" portName="ASCII">
+                      <srcCode:attributeAssignment column="13" line="10" name="ascii">
+                        <srcCode:value expr="&quot;IBM&quot;"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="28" line="12" operatorName="Beacon">
+                  <srcCode:outputs>
+                    <srcCode:output column="23" index="0" line="12" streamName="BIN" type="rstring bin"/>
+                  </srcCode:outputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="14" name="iterations">
+                      <srcCode:value expr="1u"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="16" portName="BIN">
+                      <srcCode:attributeAssignment column="11" line="16" name="bin">
+                        <srcCode:value expr="&quot;010000010101010001000010&quot;"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="28" line="18" operatorName="Beacon">
+                  <srcCode:outputs>
+                    <srcCode:output column="23" index="0" line="18" streamName="HEX" type="rstring hex"/>
+                  </srcCode:outputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="20" name="iterations">
+                      <srcCode:value expr="1u"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="22" portName="HEX">
+                      <srcCode:attributeAssignment column="11" line="22" name="hex">
+                        <srcCode:value expr="&quot;415442&quot;"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="78" line="24" operatorName="Functor">
+                  <srcCode:outputs>
+                    <srcCode:output column="61" index="0" line="24" streamName="ConvertFromASCII" type="rstring ascii, rstring binString, rstring hexString"/>
+                  </srcCode:outputs>
+                  <srcCode:inputs>
+                    <srcCode:input column="86" index="0" line="24">
+                      <srcCode:istream column="86" line="24" name="ASCII"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="26" portName="ConvertFromASCII">
+                      <srcCode:attributeAssignment column="22" line="26" name="binString" outputFunction="ASCIIToBinaryString">
+                        <srcCode:value expr="ascii"/>
+                      </srcCode:attributeAssignment>
+                      <srcCode:attributeAssignment column="59" line="26" name="hexString" outputFunction="ASCIIToHexString">
+                        <srcCode:value expr="ascii"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="76" line="28" operatorName="Functor">
+                  <srcCode:outputs>
+                    <srcCode:output column="61" index="0" line="28" streamName="ConvertFromHex" type="rstring ascii, rstring binString, rstring hexString"/>
+                  </srcCode:outputs>
+                  <srcCode:inputs>
+                    <srcCode:input column="84" index="0" line="28">
+                      <srcCode:istream column="84" line="28" name="HEX"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="30" portName="ConvertFromHex">
+                      <srcCode:attributeAssignment column="20" line="30" name="ascii">
+                        <srcCode:value expr="&quot;ATB&quot;"/>
+                      </srcCode:attributeAssignment>
+                      <srcCode:attributeAssignment column="32" line="30" name="binString" outputFunction="HexStringToBinaryString">
+                        <srcCode:value expr="hex"/>
+                      </srcCode:attributeAssignment>
+                      <srcCode:attributeAssignment column="71" line="30" name="hexString">
+                        <srcCode:value expr="hex"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="9" invocationAlias="display" line="36" operatorName="FileSink">
+                  <srcCode:inputs>
+                    <srcCode:input column="26" index="0" line="36">
+                      <srcCode:istream column="26" line="36" name="ConvertFromASCII"/>
+                      <srcCode:istream column="43" line="36" name="ConvertFromHex"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="38" name="file">
+                      <srcCode:value expr="&quot;/dev/stdout&quot;"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="39" name="flush">
+                      <srcCode:value expr="1u"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="40" name="writePunctuations">
+                      <srcCode:value expr="false"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+            </srcCode:graph>
+          </srcCode:compositeBody>
+        </srcCode:compositeDefinition>
+      </srcCode:definitions>
+    </srcCode:compilationUnit>
+  </srcCode:sourceFile>
+
+  <srcCode:sourceFile uri="com.ibm.streamsx.bytes.sample/Operators.spl">
+    <srcCode:compilationUnit>
+      <srcCode:splNamespace column="10" line="1" name="com.ibm.streamsx.bytes.sample"/>
+      <srcCode:useDirectives>
+        <srcCode:useDirective column="5" line="3" namespaceName="com.ibm.streamsx.bytes" tail="::*"/>
+      </srcCode:useDirectives>
+      <srcCode:definitions>
+        <srcCode:compositeDefinition endColumn="1" endLine="48" startColumn="1" startLine="5">
+          <srcCode:compositeHead column="1" line="5" name="Operators"/>
+          <srcCode:compositeBody>
+            <srcCode:graph>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="43" line="11" operatorName="Beacon">
+                  <srcCode:outputs>
+                    <srcCode:output column="34" index="0" line="11" streamName="Data07" type="uint64 id, rstring raw"/>
+                  </srcCode:outputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="5" line="16" portName="Data07">
+                      <srcCode:attributeAssignment column="14" line="16" name="id">
+                        <srcCode:value expr="7ul"/>
+                      </srcCode:attributeAssignment>
+                      <srcCode:attributeAssignment column="21" line="16" name="raw">
+                        <srcCode:value expr="&quot;415442015544434A3630353334325544434A3630353334323335363534313033333230303030304632303832303131333435363738393046523230380D02680268026800010700000138F710C038F710C02EE1C095918DD5510E52148E10D28D8C0D4CCD0C80000032000000324000003240000032000000320000003340000033800000330000003280000032400B400B000B000AC00A800A800A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A000A400B800B800B800B800B800B800B800B800B800B800B400B400B400B400B400B400B400B400B400B400B400B400B400B000B000B000B000A801E857A029B32BC001E857A429B32BC401E857A829B32BC801E857A829B32BC801E857AC29B32BC801E857AC29B32BC401E857B029B32BC001E857B429B32BC001E857B829B32BB801E857BC29B32BB80424141C1C24141C1C1D555A8924B24928925808440422040201008040C6309C124129228A4E738844109000100000800100420049CA0A628AE008B0005A0008000800080008000C001E84810130203227323632C8332C339033F4109A10CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC110811301162119410CC1108113011621212490000272ADA1&quot;"/>
+                      </srcCode:attributeAssignment>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="83" line="25" operatorName="BytesParser">
+                  <srcCode:outputs>
+                    <srcCode:output column="66" index="0" line="25" streamName="ExtractedData" type="uint64 id, rstring raw, map&lt;rstring, rstring> decodedMap"/>
+                  </srcCode:outputs>
+                  <srcCode:inputs>
+                    <srcCode:input alias="Data" column="105" index="0" line="25">
+                      <srcCode:istream column="95" line="25" name="Data07"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="30" name="file">
+                      <srcCode:value expr="&quot;header.xml&quot;"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="31" name="id">
+                      <srcCode:value expr="id"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="32" name="data">
+                      <srcCode:value expr="raw"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="33" name="decoded">
+                      <srcCode:value expr="&quot;decodedMap&quot;"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="28" line="36" operatorName="Aggregate">
+                  <srcCode:outputs>
+                    <srcCode:output column="22" index="0" line="36" streamName="Stats" type="int32 rate"/>
+                  </srcCode:outputs>
+                  <srcCode:inputs>
+                    <srcCode:input alias="Input" column="55" index="0" line="36">
+                      <srcCode:istream column="38" line="36" name="ExtractedData"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:windows>
+                    <srcCode:window column="11" line="37" partitioned="false" portName="Input" windowType="tumbling">
+                      <srcCode:evictionPolicy column="26" kind="time" line="37" size="1"/>
+                    </srcCode:window>
+                  </srcCode:windows>
+                  <srcCode:outputAssignments>
+                    <srcCode:outputAssignment column="11" line="38" portName="Stats">
+                      <srcCode:attributeAssignment column="17" line="38" name="rate" outputFunction="Count"/>
+                    </srcCode:outputAssignment>
+                  </srcCode:outputAssignments>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+              <srcCode:operatorInvocation>
+                <srcCode:operatorInvocationHead column="9" invocationAlias="display" line="40" operatorName="FileSink">
+                  <srcCode:inputs>
+                    <srcCode:input alias="Input" column="45" index="0" line="40">
+                      <srcCode:istream column="28" line="40" name="ExtractedData"/>
+                    </srcCode:input>
+                  </srcCode:inputs>
+                </srcCode:operatorInvocationHead>
+                <srcCode:operatorInvocationBody>
+                  <srcCode:parameters>
+                    <srcCode:parameter column="5" line="43" name="file">
+                      <srcCode:value expr="&quot;/dev/stdout&quot;"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="44" name="flush">
+                      <srcCode:value expr="1u"/>
+                    </srcCode:parameter>
+                    <srcCode:parameter column="5" line="45" name="writePunctuations">
+                      <srcCode:value expr="true"/>
+                    </srcCode:parameter>
+                  </srcCode:parameters>
+                </srcCode:operatorInvocationBody>
+              </srcCode:operatorInvocation>
+            </srcCode:graph>
+          </srcCode:compositeBody>
+        </srcCode:compositeDefinition>
+      </srcCode:definitions>
+    </srcCode:compilationUnit>
+  </srcCode:sourceFile>
+
+</srcCode:sourceModel>

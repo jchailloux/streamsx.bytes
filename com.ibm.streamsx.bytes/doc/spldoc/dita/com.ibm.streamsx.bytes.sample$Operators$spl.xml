@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//ENs"
+"/opt/ibm/InfoSphereStreams/ext/dita-ot/dtd/technicalContent/dtd/reference.dtd">
+<reference id ="spldoc_compilationunit__">
+<title>Operators.spl</title>
+<refbody>
+<section>
+<p>
+<xref href="toolkit.xml">
+com.ibm.streamsx.bytes
+</xref>
+-&gt; <xref href="com.ibm.streamsx.bytes.sample$.xml">com.ibm.streamsx.bytes.sample</xref>-&gt; Operators.spl</p>
+</section>
+<section>
+  <title outputclass="splhead-1">Content</title>
+    <dl>
+    <dlentry><dt></dt><dd></dd></dlentry>
+    <dlentry>
+      <dt outputclass="splhead-2">Composites</dt>
+      <dd><dl>
+  <dlentry>
+     <dt><xref href="#spldoc_compilationunit__/composite_operator__Operators">composite Operators</xref></dt>
+     <dd></dd>
+  </dlentry>
+     </dl></dd>
+    </dlentry>
+     </dl>
+</section>
+<section>
+  <title outputclass="splhead-1">Composites</title>
+</section>
+<section id="composite_operator__Operators">
+  <title outputclass="splpart">composite Operators</title>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</refbody>
+</reference>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//ENs"
+"/opt/ibm/InfoSphereStreams/ext/dita-ot/dtd/technicalContent/dtd/reference.dtd">
+<reference id ="spldoc_functions__">
+<title>com.ibm.streamsx.bytes::native.function.function</title>
+<shortdesc>
+The page documents the properties of a set of native functions that may be invoked from SPL. The properties are used to map the SPL function interface to the native C++ code and libraries that implement the function. It's assumed that the function prototypes for the native code are defined in a C++ header file. Each header file corresponds to Function Set, which declares the header file, a CPP namespace, and the set of SPL interfaces for each of the native functions. If native functions require libraries, the library dependencies are also specified in the function set.
+</shortdesc>
+<refbody>
+<section>
+<p>
+<xref href="toolkit.xml">
+com.ibm.streamsx.bytes
+</xref>
+-&gt; <xref href="com.ibm.streamsx.bytes$.xml">com.ibm.streamsx.bytes</xref>-&gt; native.function.function</p>
+</section>
+<section>
+<p outputclass="splhead-1"><b><xref href="FunctionModel.xml#spldoc_reference_function_model/__functionset">Function Set</xref></b></p><dl><dlentry>
+  <dt><xref href="FunctionModel.xml#spldoc_reference_function_model/functionset__headerfilename">Header File</xref>  </dt>
+  <dd> Functions.h  </dd>
+</dlentry></dl>
+<dl><dlentry>
+  <dt><xref href="FunctionModel.xml#spldoc_reference_function_model/functionset__cppnamespacename">CPP Namespace Name</xref>  </dt>
+  <dd> bytes  </dd>
+</dlentry></dl>
+<dl><dlentry>
+  <dt><xref href="FunctionModel.xml#spldoc_reference_function_model/functionset__dependencies"><b>Dependencies</b></xref>  </dt>
+  <dd>
+    <dl>
+      <dlentry>
+         <dt>         </dt>
+          <dd/>      <dd><xref href="FunctionModel.xml#spldoc_reference_function_model/functionset__dependencies__managedlibrary_includePath">Include paths</xref>: <tt>../../impl/include</tt>      </dd>
+      </dlentry>
+ </dl></dd>
+</dlentry></dl>
+<p outputclass="splhead-1"><b><xref href="FunctionModel.xml#spldoc_reference_function_model/functionset__functions">Functions</xref></b></p><dl compact="yes">
+ <dlentry>
+   <dt outputclass="splpart"       id="-143043676"><tt>      <![CDATA[public rstring ASCIIToBinaryString(rstring)]]>      </tt>   </dt>
+   <dd>
+<p>Function that transform an ASCII string into it correspondant Binary string 
+<codeblock>
+<![CDATA[    
+    example : "IBM" -> "010010010100001001001101"
+]]></codeblock>
+
+</p>
+   </dd>
+ </dlentry>
+ <dlentry>
+   <dt outputclass="splpart"       id="378201082"><tt>      <![CDATA[public rstring ASCIIToHexString(rstring)]]>      </tt>   </dt>
+   <dd>
+<p>Function that transform an ASCII string into it correspondant Hexadecimal string 
+<codeblock>
+<![CDATA[    
+    example : "IBM" -> "49424D"
+]]></codeblock>
+
+</p>
+   </dd>
+ </dlentry>
+ <dlentry>
+   <dt outputclass="splpart"       id="2001584009"><tt>      <![CDATA[public rstring HexStringToBinaryString(rstring)]]>      </tt>   </dt>
+   <dd>
+<p>Function that transform an Hexadecimal string into it correspondant Binary string 
+<codeblock>
+<![CDATA[    
+    example : "49424D" -> "010010010100001001001101"
+]]></codeblock>
+
+</p>
+   </dd>
+ </dlentry>
+</dl>
+</section>
+</refbody>
+</reference>
+

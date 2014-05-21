@@ -1,0 +1,362 @@
+/* Additional includes go here */
+#include "BytesLib.h"
+<%
+use BytesParserCommon;
+BytesParserCommon::Init($model);
+use Cwd;
+my $pwd = cwd();
+chop($::file);
+$::file =~ s/^.//;#(0.005
+my $file=$pwd . "/data/" . $::file;
+use XML::Simple;
+my $data = XMLin($file,KeepRoot => 1, KeyAttr => 1, ForceArray=>1);
+%>
+<%SPL::CodeGen::implementationPrologue($model);%>
+using namespace SPL;
+using namespace std;
+//using namespace bytes;
+/*
+	static std::map<char, string> HexToBin = boost::assign::map_list_of
+							('0', "0000")
+							('1', "0001")
+							('2', "0010")
+							('3', "0011")
+							('4', "0100")
+							('5', "0101")
+							('6', "0110")
+							('7', "0111")
+							('8', "1000")
+							('9', "1001")
+							('A', "1010")
+							('B', "1011")
+							('C', "1100")
+							('D', "1101")
+							('E', "1110")
+							('F', "1111")
+								;
+*/
+/*
+	rstring getIntStringFromBinary(const string& inputString){
+		ostringstream oss;
+		int result=0;
+		for (int i = 0; i < inputString.length (); i++){
+			result = (result << 1) + inputString[i] - '0';
+		}
+		oss << result;
+		return oss.str();
+	}
+	rstring getASCIIFromBinary(const string& inputString){
+		string output(inputString.size() / 8, 0);
+		for (int i = 0; i < inputString.size(); i++) {
+			if (inputString[i] == '1') {
+				output[i / 8] |= 1 << (7 - (i % 8));
+			}
+		}
+		return output;
+	}
+	rstring getASCIIWordFromBinary(const string& inputString,const string& separator){
+		ostringstream oss;
+		for (int i = 0; i < inputString.length (); i+=8){
+			if(i > 0){
+				oss << separator;
+			}
+			oss << getASCIIFromBinary(SPL::Functions::String::subSlice(inputString,i,(i+8)));
+	    }
+		return oss.str();
+	}
+	rstring getIntWordFromBinary(const string& inputString,const string& separator){
+		ostringstream oss;
+		for (int i = 0; i < inputString.length (); i+=8){
+			if(i > 0){
+				oss << separator;
+			}
+			oss << getIntStringFromBinary(SPL::Functions::String::subSlice(inputString,i,(i+8)));
+	    }
+		return oss.str();
+	}
+	rstring getHexWordFromBinary(const string& inputString,const string& separator){
+		ostringstream oss;
+		for (int i = 0; i < inputString.length (); i+=8){
+			bitset<8> b(SPL::Functions::String::subSlice(inputString,i,(i+8)));
+			if(i > 0){
+				oss << separator;
+			}
+			oss << hex << setfill('0') << setw(2) << uppercase <<  b.to_ulong() ;
+	    }
+		return oss.str();
+	}
+	*/
+	/*
+	 rstring ASCIIToBinaryString(const string& inputString){
+		ostringstream oss;
+		for (int i = 0; i < inputString.length (); ++i){
+	        oss << bitset<8>(inputString[i]);
+	    }
+		return oss.str();
+	}
+	*/
+	/*
+	 rstring IntegerToBinaryString(const int& inputInteger){
+		ostringstream oss;
+		oss<< hex << setfill('0') << setw(sizeof(inputInteger)) << uppercase << inputInteger;
+		return oss.str();
+	}
+	*/
+	/*
+	 rstring HexStringToBinaryString(const string& inputString){
+		ostringstream oss;
+		for (int i = 0; i < inputString.length (); ++i){
+			oss << HexToBin[inputString [i]];
+		}
+		return oss.str();
+	}
+	*/
+
+// Constructor
+MY_OPERATOR::MY_OPERATOR()
+{
+    // Initialization code goes here
+}
+
+// Destructor
+MY_OPERATOR::~MY_OPERATOR() 
+{
+    // Finalization code goes here
+}
+
+// Notify port readiness
+void MY_OPERATOR::allPortsReady() 
+{
+    // Notifies that all ports are ready. No tuples should be submitted before
+    // this. Source operators can use this method to spawn threads.
+
+    /*
+      createThreads(1); // Create source thread
+    */
+}
+ 
+// Notify pending shutdown
+void MY_OPERATOR::prepareToShutdown() 
+{
+    // This is an asynchronous call
+}
+
+// Processing for source and threaded operators   
+void MY_OPERATOR::process(uint32_t idx)
+{
+    // A typical implementation will loop until shutdown
+    /*
+      while(!getPE().getShutdownRequested()) {
+          // do work ...
+      }
+    */
+}
+
+// Tuple processing for mutating ports 
+void MY_OPERATOR::process(Tuple & tuple, uint32_t port)
+{
+	const <%=$::inputPortZeroTupleType%>& <%=$::inputPortZeroTupleName%> = static_cast<const <%=$::inputPortZeroTupleType%>&>(tuple);
+	<%=$::outputPortZeroTupleType%> <%=$::outputPortZeroTupleName%>;
+	map<string,string> decodedMap;
+	string  binaryString;
+	string result;
+
+
+//	struct timeval tim;  
+//    gettimeofday(&tim, NULL);  
+//    double t1=tim.tv_sec+(tim.tv_usec/1000000.0); 
+    
+    
+	switch (<%=$::id->getValueAt(0)->getCppExpression()%>){
+<%foreach my $raw (@{$data->{raws}[0]{raw}}) {%>
+	<%my $result='';%>
+		case <%=$raw->{id}%> : {
+			<%if(lc($raw->{format}) eq 'hex' ){%>
+				binaryString=Bytes::BytesClass::HexStringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(string(binaryString.rbegin(),binaryString.rend()));
+			<%}%>
+			<%if(lc($raw->{format}) eq 'bin' ){%>
+				binaryString=<%=$::data->getValueAt(0)->getCppExpression()%>;
+//				std::bitset<<%=$raw->{length}%>> bits(binaryString);
+			<%}%>
+			<%if(lc($raw->{format}) eq 'dec' ){%>
+				binaryString=Bytes::BytesClass::IntegerToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(IntegerToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+			<%}%>
+			<%if(lc($raw->{format}) eq 'str' ){%>
+				binaryString=Bytes::BytesClass::stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+			<%}%>
+			<%foreach my $packet (@{$raw->{packet}}) {%>
+				<%if(exists ($packet->{function})){
+					$result=$packet->{function};
+				}else{
+					$result="x";
+				}
+				my $f;
+				
+				if(lc($packet->{datatype}) eq 'string' ){
+					$f="Bytes::BytesClass::getASCIIFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}))";
+				}
+				if(lc($packet->{datatype}) eq 'hexword' ){
+					$f="Bytes::BytesClass::getHexWordFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}),\"$packet->{separator}\")";
+				}
+				if(lc($packet->{datatype}) eq 'int' ){
+#					$f="std::bitset<$packet->{length}>(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length})).to_ulong()";
+					$f="Bytes::BytesClass::getIntStringFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}))";
+
+				}
+				if(lc($packet->{datatype}) eq 'long' ){
+					$f="Bytes::BytesClass::getLongStringFromBinaryString(SPL::Functions::String::subSlice(binaryString,0,12))";
+				}
+				$result =~ s/x/$f/g;
+				%>
+				//<%=$raw->{name}%>(<%=$raw->{id}%>) -> <%=$packet->{name}%>(<%=$packet->{id}%>)
+//				std::bitset<<%=$packet->{length}%>> <%=$packet->{name}%>;//(stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+
+//			    <%#for (my $i = 0; $i < $packet->{length};$i++) {%>
+//			    <%#=$packet->{name}%>.set(<%#=$i%>,bits[<%#=$packet->{start}+$i%>]);
+//			    <%#}%>
+				decodedMap["<%=$packet->{name}%>"]=<%=$result%>;
+			<%}%>
+			break;
+		}
+<%}%>
+	}
+
+//	gettimeofday(&tim, NULL);  
+//  double t2=tim.tv_sec+(tim.tv_usec/1000000.0);  
+//	printf("%.6lf seconds taken to extract data\n", t2-t1); 
+
+      OPort0Type otuple;
+
+	
+	<%	my $decodedAttributeName=$::decoded->getValueAt(0)->getSPLExpression();
+		$decodedAttributeName =~ s/"//g;
+		foreach my $attribute (@{$::outputPortZero->getAttributes()}) { 
+		my $name = $attribute->getName();
+		my $inputAttr=$::inputPortZero->getAttributeByName($name);
+		if ($inputAttr ne ''){
+		%>
+		otuple.set_<%=$name%>( <%=$::inputPortZeroTupleName%>.get_<%=$name%>());  
+		<%}%>
+		<%
+		if ($name  eq $decodedAttributeName) { %>
+			otuple.set_<%=$name%>( decodedMap);  
+		<%}
+		}%> 
+      submit(otuple, 0); // submit to output port 0
+	submit(Punctuation::WindowMarker, 0);
+}
+
+// Tuple processing for non-mutating ports
+void MY_OPERATOR::process(Tuple const & tuple, uint32_t port)
+{
+	const <%=$::inputPortZeroTupleType%>& <%=$::inputPortZeroTupleName%> = static_cast<const <%=$::inputPortZeroTupleType%>&>(tuple);
+	<%=$::outputPortZeroTupleType%> <%=$::outputPortZeroTupleName%>;
+	map<string,string> decodedMap;
+	string  binaryString;
+	string result;
+
+
+//	struct timeval tim;  
+//    gettimeofday(&tim, NULL);  
+//    double t1=tim.tv_sec+(tim.tv_usec/1000000.0); 
+    
+    
+	switch (<%=$::id->getValueAt(0)->getCppExpression()%>){
+<%foreach my $raw (@{$data->{raws}[0]{raw}}) {%>
+	<%my $result='';%>
+		case <%=$raw->{id}%> : {
+			<%if(lc($raw->{format}) eq 'hex' ){%>
+				binaryString=Bytes::BytesClass::HexStringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(string(binaryString.rbegin(),binaryString.rend()));
+			<%}%>
+			<%if(lc($raw->{format}) eq 'bin' ){%>
+				binaryString=<%=$::data->getValueAt(0)->getCppExpression()%>;
+//				std::bitset<<%=$raw->{length}%>> bits(binaryString);
+			<%}%>
+			<%if(lc($raw->{format}) eq 'dec' ){%>
+				binaryString=Bytes::BytesClass::IntegerToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(IntegerToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+			<%}%>
+			<%if(lc($raw->{format}) eq 'str' ){%>
+				binaryString=Bytes::BytesClass::stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>);
+//				std::bitset<<%=$raw->{length}%>> bits(stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+			<%}%>
+			<%foreach my $packet (@{$raw->{packet}}) {%>
+				<%if(exists ($packet->{function})){
+					$result=$packet->{function};
+				}else{
+					$result="x";
+				}
+				my $f;
+				
+				if(lc($packet->{datatype}) eq 'string' ){
+					$f="Bytes::BytesClass::getASCIIFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}))";
+				}
+				if(lc($packet->{datatype}) eq 'hexword' ){
+					$f="Bytes::BytesClass::getHexWordFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}),\"$packet->{separator}\")";
+				}
+				if(lc($packet->{datatype}) eq 'int' ){
+#					$f="std::bitset<$packet->{length}>(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length})).to_ulong()";
+					$f="Bytes::BytesClass::getIntStringFromBinary(SPL::Functions::String::subSlice(binaryString,$packet->{start},$packet->{start}+$packet->{length}))";
+
+				}
+				if(lc($packet->{datatype}) eq 'long' ){
+					$f="Bytes::BytesClass::getLongStringFromBinaryString(SPL::Functions::String::subSlice(binaryString,0,12))";
+				}
+				$result =~ s/x/$f/g;
+				%>
+				//<%=$raw->{name}%>(<%=$raw->{id}%>) -> <%=$packet->{name}%>(<%=$packet->{id}%>)
+//				std::bitset<<%=$packet->{length}%>> <%=$packet->{name}%>;//(stringToBinaryString(<%=$::data->getValueAt(0)->getCppExpression()%>));
+
+//			    <%#for (my $i = 0; $i < $packet->{length};$i++) {%>
+//			    <%#=$packet->{name}%>.set(<%#=$i%>,bits[<%#=$packet->{start}+$i%>]);
+//			    <%#}%>
+				decodedMap["<%=$packet->{name}%>"]=<%=$result%>;
+			<%}%>
+			break;
+		}
+<%}%>
+	}
+
+//	gettimeofday(&tim, NULL);  
+//  double t2=tim.tv_sec+(tim.tv_usec/1000000.0);  
+//	printf("%.6lf seconds taken to extract data\n", t2-t1); 
+
+      OPort0Type otuple;
+
+	
+	<%	my $decodedAttributeName=$::decoded->getValueAt(0)->getSPLExpression();
+		$decodedAttributeName =~ s/"//g;
+		foreach my $attribute (@{$::outputPortZero->getAttributes()}) { 
+		my $name = $attribute->getName();
+		my $inputAttr=$::inputPortZero->getAttributeByName($name);
+		if ($inputAttr ne ''){
+		%>
+		otuple.set_<%=$name%>( <%=$::inputPortZeroTupleName%>.get_<%=$name%>());  
+		<%}%>
+		<%
+		if ($name  eq $decodedAttributeName) { %>
+			otuple.set_<%=$name%>( decodedMap);  
+		<%}
+		}%> 
+      submit(otuple, 0); // submit to output port 0
+	submit(Punctuation::WindowMarker, 0);
+}
+
+// Punctuation processing
+void MY_OPERATOR::process(Punctuation const & punct, uint32_t port)
+{
+    /*
+      if(punct==Punctuation::WindowMarker) {
+        // ...;
+      } else if(punct==Punctuation::FinalMarker) {
+        // ...;
+      }
+    */
+}
+
+<%SPL::CodeGen::implementationEpilogue($model);%>
+

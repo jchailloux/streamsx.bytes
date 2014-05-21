@@ -1,0 +1,50 @@
+namespace com.ibm.streamsx.bytes.sample;
+
+composite XMLGenerator {
+type XMLElement = tuple<map<rstring, rstring> _attrs, rstring _text>;
+	graph
+//		stream<rstring l> Lines=FileSource(){
+//			param
+//				file:"header.xml";
+//				format:line;
+//		}
+//		stream<XMLElement> A=XMLParse(Lines){
+//			param
+//				trigger:"/raws/raw/packet";
+//		}
+//		stream<rstring name,rstring length,rstring datatype> C =Functor(A){
+//			output
+//				C:name=A._attrs["name"],length=A._attrs["length"],datatype=A._attrs["datatype"];
+//		}
+//		() as Save =FileSink(D){
+//			param
+//				file:"07.txt";
+//				format:csv;
+//				flush:1u;
+//		}
+		stream<rstring name,rstring length,rstring datatype> Lines=FileSource(){
+			param
+				file:"07.txt";
+				format:csv;
+		}
+
+		stream<rstring l> D=Custom(Lines){
+			logic
+				state:{
+					mutable int32 first=1;
+					mutable int32 start=0;
+					mutable int32 id=1;
+				}
+				onTuple Lines:{
+					submit({l="\t<packet id=\""+(rstring)id+"\" name=\""+name+"\" start=\""+(rstring)start+"\" length=\""+length+"\" datatype=\""+datatype+"\"></packet>"},D);
+					start+=(int32)length;
+					id++;
+				}
+		}
+		() as B =FileSink(D){
+			param
+				file:"07.xml";
+				format:line;
+				flush:1u;
+		}
+}

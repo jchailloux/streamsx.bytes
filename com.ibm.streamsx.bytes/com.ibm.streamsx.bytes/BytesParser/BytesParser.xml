@@ -1,0 +1,145 @@
+<?xml version="1.0" ?>
+<operatorModel
+  xmlns="http://www.ibm.com/xmlns/prod/streams/spl/operator" 
+  xmlns:cmn="http://www.ibm.com/xmlns/prod/streams/spl/common" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.ibm.com/xmlns/prod/streams/spl/operator operatorModel.xsd">
+  <cppOperatorModel>
+    <context>
+      <description><![CDATA[This Operator parse a a input String that represents raw data (ASCII,Hexadecimal,Binary) and produce a map<rstring,rstring>. The content of the map match the definition of the message in the xml file {{"NAME","VALUE"}.....}
+
+	<?xml version="1.0" encoding="ISO-8859-1"?>
+	<raws>
+	  <raw id="1" name="SENSOR 1" length="4488" format="HEX">
+	  	<packet id="1" name="PROTOCOLE_TYPE" start="0" length="24" datatype="string"></packet>
+	  	<packet id="100" name="DATA_1" start="2001" length="1" datatype="int"></packet>
+	  	<packet id="500" name="VERSION" start="4400" length="8" datatype="hexword"></packet>
+	  	...
+	  </raw>	
+	  <raw id="2" name="SENSOR 2" length="100" format="BIN">
+	  	....
+	  </raw>	
+	</raws>
+
+      ]]>
+      
+      </description>
+      <!-- some optional elements
+      <metrics>
+        <metric>
+          <name>metricName</name>
+          <description>Metric description</description>
+          <kind>Counter</kind>
+        </metric>
+      </metrics>
+      <customLiterals>
+        <enumeration>
+          <name>CustomLiteralTypeName</name>
+          <value>enumLiteral1</value>
+          <value>enumLiteral2</value>
+        </enumeration>
+      </customLiterals>
+      <customOutputFunctions>
+        <customOutputFunction>
+          <name>CustomOutputFunctionTypeName</name>
+          <function>
+            <description>What does this sample function do?</description>
+            <prototype><![CDATA[int32 SampleFunc()]]></prototype>
+          </function>
+        </customOutputFunction>
+      </customOutputFunctions>
+      -->
+      <libraryDependencies>
+        <library>
+          <cmn:description></cmn:description>
+          <cmn:managedLibrary>
+            <cmn:lib>BytesLib</cmn:lib>
+             <cmn:libPath>../../impl/lib/</cmn:libPath> 
+            <cmn:includePath>../../impl/include</cmn:includePath>
+          </cmn:managedLibrary>
+        </library>
+      </libraryDependencies>
+      <providesSingleThreadedContext>Never</providesSingleThreadedContext>
+	  <incrementalCompilationStrategy>ResultDependent</incrementalCompilationStrategy>
+    </context>  
+    <parameters>
+      <allowAny>false</allowAny>
+      <parameter>
+        <name>file</name>
+        <description>The xml filename that contains the definition on how to extract data</description>
+        <optional>false</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>AttributeFree</expressionMode>
+        <type>rstring</type>
+        <cardinality>1</cardinality>
+      </parameter>
+      <parameter>
+        <name>id</name>
+        <description>The attribute that contains the id of raw data</description>
+        <optional>false</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>Attribute</expressionMode>
+        <type></type>
+        <cardinality>1</cardinality>
+      </parameter>
+      <parameter>
+        <name>data</name>
+        <description>The attribute that contains raw data</description>
+        <optional>false</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>Attribute</expressionMode>
+        <type></type>
+        <cardinality>1</cardinality>
+      </parameter>
+      <parameter>
+        <name>decoded</name>
+        <description>Attribute name for map that will contains decoded values</description>
+        <optional>false</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>Expression</expressionMode>
+        <type>rstring</type>
+        <cardinality>1</cardinality>
+      </parameter>
+    </parameters>
+    <inputPorts>
+      <inputPortSet>
+        <tupleMutationAllowed>false</tupleMutationAllowed>
+        <windowingMode>NonWindowed</windowingMode>
+        <windowPunctuationInputMode>Oblivious</windowPunctuationInputMode>
+        <cardinality>1</cardinality>
+        <optional>false</optional>
+      </inputPortSet>
+       <!-- 
+      <inputPortOpenSet>
+        <tupleMutationAllowed>true</tupleMutationAllowed>
+        <windowingMode>OptionallyWindowed</windowingMode>
+        <windowPunctuationInputMode>WindowBound</windowPunctuationInputMode>
+        <cardinality>1</cardinality>
+        <optional>false</optional>
+      </inputPortOpenSet>
+ 		-->
+     </inputPorts>
+    <outputPorts>
+      <outputPortSet>
+        <expressionMode>Expression</expressionMode> 
+        <autoAssignment>true</autoAssignment>
+        <completeAssignment>false</completeAssignment>
+        <rewriteAllowed>true</rewriteAllowed>
+        <windowPunctuationOutputMode>Generating</windowPunctuationOutputMode>
+        <tupleMutationAllowed>true</tupleMutationAllowed>
+        <cardinality>1</cardinality>
+        <optional>false</optional>
+      </outputPortSet>
+      <!-- 
+      <outputPortOpenSet>
+        <expressionMode>Expression</expressionMode> 
+        <autoAssignment>false</autoAssignment>
+        <completeAssignment>false</completeAssignment>
+        <rewriteAllowed>true</rewriteAllowed>
+        <windowPunctuationOutputMode>Generating</windowPunctuationOutputMode>
+        <tupleMutationAllowed>true</tupleMutationAllowed>
+      </outputPortOpenSet>    
+       -->
+    </outputPorts>
+  </cppOperatorModel>
+</operatorModel>
