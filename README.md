@@ -1,23 +1,65 @@
 streamsx.bytes
 ==============
 
-Being able to extract data from a raw string.
+This toolkit provides
 
-Assuming you receive a message like that : 
- 0A34AB.........86911H or 00110011100000.....01010101
- 
- You should have to describe how to extract data.
- 
- ```
- <raws>
-  <raw id="10" name="NAME_OF_THE_MESSAGE" length="4497" format="HEX" multiplex="PACKET_NAME_THAT_CONTAINS_MULTIPLEX_VALUE">
-    	<packet id="1" name="VALUE_1" start="0" length="24" datatype="string"></packet>
-    	<packet id="2" name="PACKET_NAME_THAT_CONTAINS_MULTIPLEX_VALUE" start="24" length="8" datatype="int"></packet>
-    	<packet id="3" name="VERSION" start="32" length="80" datatype="hexword"></packet>
-    	......
-    	<packet id="200" name="V1" start="1034" length="32" datatype="int" multiplexValue="7"></packet>
-    	<packet id="201" name="V2" start="1034" length="32" datatype="int" multiplexValue="8"></packet>
-  </raw>
-  ......
- </raws>
- ```
+	Functions to manipulate data operator to parse a message and extract bits from it based on a JSON definition
+
+		Conversion
+			decodeBase64			: Decode a base64 string
+								MQ==					->		1
+
+			encodeBase64			: Encode a string into it's base64 representation
+								IBM					->		SUJN
+
+			convertFromASCIIToHex		: Convert an ASCII string into Hexadecimal string
+								22					->		3232
+
+			convertFromHexToASCII		: Convert an Hexadecimal string into an ASCII string
+								49424D					->		IBM
+
+			convertFromASCIIToBinary	: Convert an ASCII string into a Binary string
+								22					-> 		0011001000110010
+
+			convertFromBinaryToASCII	: Convert a Binary string into an ASCII string
+								010010010100001001001101		->		IBM
+
+			convertFromHexToBinary		: Convert an Hexadecimal string into a Binary string
+								3232					->		0011001000110010
+
+			convertFromBinaryToHex		: Convert a Binary string into an Hexadecimal string
+								010010010100001001001101		->		49424D
+
+
+		Transformation
+			getBitStringFromInt		: Get the Binary string of an integer
+								18178					->		0100011100000010
+
+			getBitStringFromUnsignedInt	: Get the Binary string of an unsigned integer
+								18178					->		0100011100000010
+
+			getUnsignedIntFromBinaryString	: Get the unsigned int represented by a Binary string
+								0100011100000010			->		18178
+
+			rotateLeft			: Rotate a Binary string to the left
+								0100011100000010 			->		0000001001000111 (ROL 8)
+
+			rotateRight			: Rotate a Binary string to the right
+								0100011100000010 			->		0010010001110000 (ROR 4)
+
+			getValueFromBinaryString	: Get the value (float64) of a Binary string using the formula y=factor * x + offset
+							 with the precision you specified (%.xf) and applying correction if limit is specified
+								1100000010("%.3f",0.0625,-32,512)	->		-15.875
+								00111011111("%.9f",0.17578125,100,0)	->		184.19921875
+	Operator to parse message
+
+		BytesParse				: Operator that parse a message using a message definition provided in a JSON format.
+							 The definition is provided as a parameter
+							 The tuple for the output port must contain the ExtractedParameter schema (provided by the toolkit).
+
+							 A punctuation is generated when the input message is parsed.
+
+	Type 
+		ExtractedParameter			: The tuple schema for parsed data 
+
+

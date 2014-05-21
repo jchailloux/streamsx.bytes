@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functionModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ibm.com/xmlns/prod/streams/spl/function" xmlns:cmn="http://www.ibm.com/xmlns/prod/streams/spl/common" xsi:schemaLocation="http://www.ibm.com/xmlns/prod/streams/spl/function functionModel.xsd">
+  <functionSet>
+    <headerFileName>BytesFunctions.h</headerFileName>
+    <cppNamespaceName></cppNamespaceName>
+    <functions>
+      <function>
+        <description docHref="" sampleUri="">Decode a Base64 String</description>
+        <prototype cppName="decodeBase64">public rstring decodeBase64(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Encode string into a Base64 string</description>
+        <prototype cppName="encodeBase64">public rstring encodeBase64(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an ASCII string into an Hex string</description>
+        <prototype cppName="convertFromASCIIToHex">public rstring convertFromASCIIToHex(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an HEX string into an ASCII string</description>
+        <prototype cppName="convertFromHexToASCII">public rstring convertFromHexToASCII(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an ASCII string into an Binary string</description>
+        <prototype cppName="convertFromASCIIToBinary">public rstring convertFromASCIIToBinary(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an Binary string into an ASCII string</description>
+        <prototype cppName="convertFromBinaryToASCII">public rstring convertFromBinaryToASCII(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an Hex string into an Binary string</description>
+        <prototype cppName="convertFromHexToBinary">public rstring convertFromHexToBinary(rstring)</prototype>
+      </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an Binary string into an Hex string</description>
+        <prototype cppName="convertFromBinaryToHex">public rstring convertFromBinaryToHex(rstring)</prototype>
+      </function>
+    </functions>
+    <dependencies>
+      <library>
+        <cmn:description>ConversionLib-Functions</cmn:description>
+        <cmn:managedLibrary>
+          <cmn:includePath>../../impl/include</cmn:includePath>
+        </cmn:managedLibrary>
+      </library>
+    </dependencies>
+  </functionSet>
+</functionModel>

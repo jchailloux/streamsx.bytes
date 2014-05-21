@@ -1,106 +1,121 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="3.2.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="4.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <toolkit name="com.ibm.streamsx.bytes" requiredProductVersion="3.0.0" version="1.0.0">
+  <toolkit name="com.ibm.streamsx.bytes" requiredProductVersion="4.0.0.0" version="1.0.0">
     <description/>
     <uriTable>
+      <uri index="1" value="com.ibm.streamsx.bytes/Common.spl"/>
       <uri index="2" value="com.ibm.streamsx.bytes/BytesParser"/>
-      <uri index="1" value="com.ibm.streamsx.bytes/native.function/function.xml"/>
+      <uri index="3" value="com.ibm.streamsx.bytes.conversion/native.function/function.xml"/>
+      <uri index="4" value="com.ibm.streamsx.bytes.transformation/native.function/function.xml"/>
     </uriTable>
     <namespace name="com.ibm.streamsx.bytes">
       <primitiveOp language="Cpp" modelUriIndex="2" name="BytesParser" public="true">
-        <description>This Operator parse a a input String that represents raw data (ASCII,Hexadecimal,Binary) and produce a map&lt;rstring,rstring&gt;. The content of the map match the definition of the message in the xml file {{"NAME","VALUE"}.....}
-
-	&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
-	&lt;raws&gt;
-	  &lt;raw id="1" name="SENSOR 1" length="4488" format="HEX"&gt;
-	  	&lt;packet id="1" name="PROTOCOLE_TYPE" start="0" length="24" datatype="string"&gt;&lt;/packet&gt;
-	  	&lt;packet id="100" name="DATA_1" start="2001" length="1" datatype="int"&gt;&lt;/packet&gt;
-	  	&lt;packet id="500" name="VERSION" start="4400" length="8" datatype="hexword"&gt;&lt;/packet&gt;
-	  	...
-	  &lt;/raw&gt;	
-	  &lt;raw id="2" name="SENSOR 2" length="100" format="BIN"&gt;
-	  	....
-	  &lt;/raw&gt;	
-	&lt;/raws&gt;
-
-      
-      
-      </description>
         <parameter cardinality="1" expressionMode="AttributeFree" name="file" optional="false" type="rstring">
-          <description>The xml filename that contains the definition on how to extract data</description>
+          <description>Name of the source file</description>
         </parameter>
-        <parameter cardinality="1" expressionMode="Attribute" name="id" optional="false" type="">
-          <description>The attribute that contains the id of raw data</description>
+        <parameter cardinality="1" expressionMode="Attribute" name="frame" optional="true">
+          <description>attribute name of the list of subframe</description>
         </parameter>
-        <parameter cardinality="1" expressionMode="Attribute" name="data" optional="false" type="">
-          <description>The attribute that contains raw data</description>
-        </parameter>
-        <parameter cardinality="1" expressionMode="Expression" name="decoded" optional="false" type="rstring">
-          <description>Attribute name for map that will contains decoded values</description>
-        </parameter>
-        <inputPort maxNumPorts="1" minNumPorts="1" optional="false" windowPunctInputMode="Oblivious">
-          <windowPolicy>NonWindowed</windowPolicy>
+        <inputPort minNumPorts="0" optional="true" windowPunctInputMode="WindowBound">
+          <windowPolicy>OptionallyWindowed</windowPolicy>
         </inputPort>
-        <outputPort expressionMode="Expression" maxNumPorts="1" minNumPorts="1" optional="false" windowPunctOutputMode="Generating"/>
+        <outputPort expressionMode="Expression" minNumPorts="0" optional="true" windowPunctOutputMode="Generating"/>
       </primitiveOp>
-      <function modelUriIndex="1" name="ASCIIToHexString" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an ASCII string into it correspondant Hexadecimal string
-        
-        example : "IBM" -&gt; "49424D"</description>
-        <prototype>public rstring ASCIIToHexString(rstring)</prototype>
+      <type column="8" line="3" name="ExtractedParameter" static="true" type="rstring frameName, uint8 subFrameIndex, rstring subFrameName, rstring packetName, rstring packetDescription, rstring packetFormat, float64 packetFactor, float64 packetOffset, float64 packetLimit, rstring packetUnit, rstring packetBinaryString" uriIndex="1"/>
+    </namespace>
+    <namespace name="com.ibm.streamsx.bytes.conversion">
+      <function modelUriIndex="3" name="decodeBase64" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Decode a Base64 String</description>
+        <prototype>public rstring decodeBase64(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="ASCIIToBinaryString" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an ASCII string into it correspondant Binary string
-        
-        example : "IBM" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring ASCIIToBinaryString(rstring)</prototype>
+      <function modelUriIndex="3" name="encodeBase64" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Encode string into a Base64 string</description>
+        <prototype>public rstring encodeBase64(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="HexStringToBinaryString" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring HexStringToBinaryString(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromASCIIToHex" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an ASCII string into an Hex string</description>
+        <prototype>public rstring convertFromASCIIToHex(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="getIntStringFromBinary" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring getIntStringFromBinary(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromHexToASCII" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an HEX string into an ASCII string</description>
+        <prototype>public rstring convertFromHexToASCII(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="getASCIIFromBinary" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring getASCIIFromBinary(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromASCIIToBinary" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an ASCII string into an Binary string</description>
+        <prototype>public rstring convertFromASCIIToBinary(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="getASCIIWordFromBinary" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring getASCIIWordFromBinary(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromBinaryToASCII" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an Binary string into an ASCII string</description>
+        <prototype>public rstring convertFromBinaryToASCII(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="getIntWordFromBinary" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring getIntWordFromBinary(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromHexToBinary" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an Hex string into an Binary string</description>
+        <prototype>public rstring convertFromHexToBinary(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
-      <function modelUriIndex="1" name="getHexWordFromBinary" native="true" public="true" returnType="rstring" uriIndex="0">
-        <description>Function that transform an Hexadecimal string into it correspondant Binary string
-        
-        example : "49424D" -&gt; "010010010100001001001101"</description>
-        <prototype>public rstring getHexWordFromBinary(rstring)</prototype>
+      <function modelUriIndex="3" name="convertFromBinaryToHex" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an Binary string into an Hex string</description>
+        <prototype>public rstring convertFromBinaryToHex(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
     </namespace>
+    <namespace name="com.ibm.streamsx.bytes.transformation">
+      <function modelUriIndex="4" name="getBitStringFromInt" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Get the bit string representation of a int</description>
+        <prototype>public rstring getBitStringFromInt(int64)</prototype>
+        <parameter name="__p1" type="int64"/>
+      </function>
+      <function modelUriIndex="4" name="getBitStringFromUnsignedInt" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Get the bit string representation of an unsigned int</description>
+        <prototype>public rstring getBitStringFromUnsignedInt(uint64)</prototype>
+        <parameter name="__p1" type="uint64"/>
+      </function>
+      <function modelUriIndex="4" name="getUnsignedIntFromBinaryString" native="true" public="true" returnType="uint64" uriIndex="0">
+        <description>Get the unsigned int value from a binary string</description>
+        <prototype>public uint64 getUnsignedIntFromBinaryString(rstring)</prototype>
+        <parameter name="__p1" type="rstring"/>
+      </function>
+      <function modelUriIndex="4" name="getValueFromBinaryString" native="true" public="true" returnType="float64" uriIndex="0">
+        <description>Get the Value(float64) from a binary string using formula (y=factor * x + offset) where offset is an adjustement where limit is set</description>
+        <prototype>public float64 getValueFromBinaryString(rstring,rstring,float64,float64,float64)</prototype>
+        <parameter name="__p1" type="rstring"/>
+        <parameter name="__p2" type="rstring"/>
+        <parameter name="__p3" type="float64"/>
+        <parameter name="__p4" type="float64"/>
+        <parameter name="__p5" type="float64"/>
+      </function>
+      <function modelUriIndex="4" name="rotateLeft" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Rotate left a binary string</description>
+        <prototype>public rstring rotateLeft(rstring,uint8)</prototype>
+        <parameter name="__p1" type="rstring"/>
+        <parameter name="__p2" type="uint8"/>
+      </function>
+      <function modelUriIndex="4" name="rotateRight" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Rotate right a binary string</description>
+        <prototype>public rstring rotateRight(rstring,uint8)</prototype>
+        <parameter name="__p1" type="rstring"/>
+        <parameter name="__p2" type="uint8"/>
+      </function>
+    </namespace>
+    <sabFiles>
+      <ti:include path="toolkit.xml" root="toolkitDir"/>
+      <ti:include path="impl/java/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/java/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/nl/*.dat" root="toolkitDir"/>
+      <ti:include path="etc/**" root="toolkitDir"/>
+      <ti:include path="lib/**" root="toolkitDir"/>
+      <ti:include path="nl/**" root="toolkitDir"/>
+      <ti:include path="opt/**" root="toolkitDir"/>
+    </sabFiles>
   </toolkit>
 
 </toolkitModel>

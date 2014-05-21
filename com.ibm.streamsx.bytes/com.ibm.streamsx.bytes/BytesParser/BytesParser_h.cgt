@@ -1,7 +1,56 @@
 /* Additional includes go here */
-
+//#include <iostream>
+#include <jansson.h>
+//#include <fstream>
+//#include <sstream>
+#include <string.h>
+#include <vector>
+#define NUMBER_OF_BIT_PER_CHAR 4
 <%SPL::CodeGen::headerPrologue($model);%>
+using namespace std;
 
+
+
+class Packet{
+	public:
+		int word;					// Word position in the subFrame
+		string name;				// Name of the parameter
+		string description;			// Description of the parameter
+		string unit;				// Unit of the parameter
+		bool isPacketSigned;		// Is the value signed ?
+		bool isPacketMSB;			// MSB or LSB
+		int start;					// Bit start in the word
+		int length;					// Number of bits to extract
+		string format;				// Format of the value
+		float factor;				// Factor to apply to the extracted value
+		float offset;				// Offset to apply to the extracted value
+		int limit;					// Limit . Need to explain
+		string binaryString;
+//		ByteParser(json_t *element);
+
+	protected:
+};
+
+class SubFrame{
+	public:
+		int index;					// The subframe index
+		string name;				// Name of the subFrame
+		int words;					// Number of words in the subframe
+		int wordLength;				// Length of the word in bit
+		int wordContainerLength;	// Length of the container that store the word
+		bool isFrameMSB;			// is MSB or LSB ?
+		int time;					// time represented for the subframe
+		bool haveDelimiter;		// Is the subframe starts with specific words ?
+		string delimiter;			// The word that starts the subframe 
+		vector<Packet> packets;		//Packets to decode
+
+	protected:
+};
+class Frame{
+	public:
+		string name;				// Name of the frame
+		vector<SubFrame> subFrames;	// SubFrames
+};
 class MY_OPERATOR : public MY_BASE_OPERATOR 
 {
 public:
@@ -30,7 +79,10 @@ public:
   void process(Punctuation const & punct, uint32_t port);
 private:
   // Members
+  
 }; 
 
+Frame frame;
+bool ready;
 <%SPL::CodeGen::headerEpilogue($model);%>
 
