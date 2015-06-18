@@ -36,6 +36,10 @@
         <description docHref="" sampleUri="">Function that convert an Binary string into an Hex string</description>
         <prototype cppName="convertFromBinaryToHex">public rstring convertFromBinaryToHex(rstring)</prototype>
       </function>
+      <function>
+        <description docHref="" sampleUri="">Function that convert an Binary string into an Hex string</description>
+        <prototype cppName="reverseBinaryString">public rstring reverseBinaryString(rstring)</prototype>
+      </function>
     </functions>
     <dependencies>
       <library>

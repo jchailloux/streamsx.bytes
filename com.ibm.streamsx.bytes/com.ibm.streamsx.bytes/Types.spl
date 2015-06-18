@@ -1,0 +1,14 @@
+namespace com.ibm.streamsx.bytes;
+
+type Parameter=      rstring objectName
+					,rstring messageName
+					,rstring messageDescription
+					,rstring parameterName
+					,rstring parameterDescription
+					,rstring parameterFormat
+					,float32 parameterFactor
+					,float32 parameterOffset
+					,float32 parameterLimit
+					,rstring parameterUnit
+					,rstring parameterBinaryString
+					;

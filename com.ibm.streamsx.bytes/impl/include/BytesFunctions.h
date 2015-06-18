@@ -8,6 +8,8 @@
 //#include "bytes/Transformation.h"
 #include "util.h"
 #include <iomanip>
+#include "boost/dynamic_bitset.hpp"
+
 using namespace SPL;
 using namespace std;
 
@@ -153,6 +155,15 @@ namespace bytes{
 			}
 			return oss.str();
 		}
+		inline rstring convertFromHexToBinaryUsingDictionnary(const string& inputString,std::map<char,string> dic){
+			SPLAPPTRC(L_DEBUG, "Hexadecimal String to convert into Binary using dictionnary:  " <<inputString , SPL_OPER_DBG);
+			ostringstream oss;
+			for (int i = 0; i < (int)inputString.length (); ++i){
+//				cout << inputString [i] << "-"<<std::toupper(inputString [i],loc)<<" = " << HexToBin[std::toupper(inputString [i],loc)]<<endl;
+				oss << dic[inputString [i]];
+			}
+			return oss.str();
+		}
 		inline rstring convertFromBinaryToHex(const string& inputString){
 			SPLAPPTRC(L_DEBUG, "Binary String to convert into Hexadecimal :  " <<inputString , SPL_OPER_DBG);
 			ostringstream oss;
@@ -160,6 +171,17 @@ namespace bytes{
 				bitset<8> b(SPL::Functions::String::subSlice(inputString,i,(i+8)));
 				oss << hex << setfill('0') << setw(2) << uppercase <<  b.to_ulong() ;
 		    }
+			return oss.str();
+		}
+		inline rstring reverseBinaryString(const string& input){
+			SPLAPPTRC(L_DEBUG, "Reverse Binary String  :  " <<input , SPL_OPER_DBG);
+			ostringstream oss;
+			boost::dynamic_bitset<> b(input);
+			boost::dynamic_bitset<> out;
+			unsigned int sz=b.size();
+			for (unsigned int i = 0; i < sz; i++)
+				out[(sz-1) - i] = b[i];
+			oss << out;
 			return oss.str();
 		}
 	}
@@ -209,26 +231,8 @@ namespace bytes{
 			}
 		}
 		inline long getUnsignedIntFromBinaryString(string input){
-			if (input.length() <=8){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 8", SPL_OPER_DBG);
-				bitset<8> b(input);
-				return b.to_ulong();
-			}else
-			if (input.length() <=16){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 16", SPL_OPER_DBG);
-				bitset<16> b(input);
-				return b.to_ulong();
-			}else
-			if (input.length() <=32){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 32", SPL_OPER_DBG);
-				bitset<32> b(input);
-				return b.to_ulong();
-			}else{
-//			if ((input>=0) && (input <=18446744073709551615 )){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 64", SPL_OPER_DBG);
-				bitset<64> b(input);
-				return b.to_ulong();
-			}
+			boost::dynamic_bitset<> b(input);
+			return b.to_ulong();
 		}
 		inline double getValueFromBinaryString(string input,string format,double factor,double offset,double limit){
 			unsigned int value=getUnsignedIntFromBinaryString(input);
@@ -243,56 +247,20 @@ namespace bytes{
 	    	return result;
 		}
 		inline string rotateLeft(string input,unsigned int shift){
-			if (input.length() <=8){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 8", SPL_OPER_DBG);
-				bitset<8> b(input);
-				b=ROL(b,shift);
-				return b.to_string();
-			}else
-			if (input.length() <=16){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 16", SPL_OPER_DBG);
-				bitset<16> b(input);
-				b=ROL(b,shift);
-				return b.to_string();
-			}else
-			if (input.length() <=32){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 32", SPL_OPER_DBG);
-				bitset<32> b(input);
-				b=ROL(b,shift);
-				return b.to_string();
-			}else{
-//			if ((input>=0) && (input <=18446744073709551615 )){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 64", SPL_OPER_DBG);
-				bitset<64> b(input);
-				b=ROL(b,shift);
-				return b.to_string();
-			}
+			boost::dynamic_bitset<> b(input);
+			boost::dynamic_bitset<> rol;
+			ostringstream oss;
+			rol=	(b >> (b.size()-shift)) | (b << shift);
+			oss<<rol;
+			return oss.str();
 		}
 		inline string rotateRight(string input,unsigned int shift){
-			if (input.length() <=8){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 8", SPL_OPER_DBG);
-				bitset<8> b(input);
-				b=ROR(b,shift);
-				return b.to_string();
-			}else
-			if (input.length() <=16){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 16", SPL_OPER_DBG);
-				bitset<16> b(input);
-				b=ROR(b,shift);
-				return b.to_string();
-			}else
-			if (input.length() <=32){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 32", SPL_OPER_DBG);
-				bitset<32> b(input);
-				b=ROR(b,shift);
-				return b.to_string();
-			}else{
-//			if ((input>=0) && (input <=18446744073709551615 )){
-				SPLAPPTRC(L_DEBUG, "length of " << input << " is 64", SPL_OPER_DBG);
-				bitset<64> b(input);
-				b=ROR(b,shift);
-				return b.to_string();
-			}
+			boost::dynamic_bitset<> b(input);
+			boost::dynamic_bitset<> ror;
+			ostringstream oss;
+			ror=	(b << (b.size()-shift)) | (b >> shift);
+			oss<<ror;
+			return oss.str();
 		}
 
 

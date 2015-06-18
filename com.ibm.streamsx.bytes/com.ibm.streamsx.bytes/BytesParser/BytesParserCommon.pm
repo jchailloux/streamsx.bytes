@@ -37,8 +37,11 @@ sub Init($)
 	$::file = $model->getParameterByName("file");
 #	$::file = $::file ? $::file->getValueAt(0)->getSPLExpression():"ffd.csv";
 
-	#The attribute name that contains the frame
-    $::frame = $model->getParameterByName("frame");
+	#The attribute name that contains the message
+    $::message = $model->getParameterByName("message");
+
+	#The attribute name that contains the identifier
+    $::identifier = $::identifier ? $model->getParameterByName("identifier") : "NONE";
 
 }
 1;
