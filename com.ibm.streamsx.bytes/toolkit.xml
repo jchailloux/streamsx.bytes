@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="4.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="4.0.1.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <toolkit name="com.ibm.streamsx.bytes" requiredProductVersion="4.0.0.0" version="1.0.0">
+  <toolkit name="com.ibm.streamsx.bytes" requiredProductVersion="4.0.0.0" version="2.0.0">
     <description/>
     <uriTable>
-      <uri index="1" value="com.ibm.streamsx.bytes/Common.spl"/>
       <uri index="2" value="com.ibm.streamsx.bytes/BytesParser"/>
       <uri index="3" value="com.ibm.streamsx.bytes.conversion/native.function/function.xml"/>
       <uri index="4" value="com.ibm.streamsx.bytes.transformation/native.function/function.xml"/>
+      <uri index="1" value="com.ibm.streamsx.bytes/Types.spl"/>
     </uriTable>
     <namespace name="com.ibm.streamsx.bytes">
       <primitiveOp language="Cpp" modelUriIndex="2" name="BytesParser" public="true">
         <parameter cardinality="1" expressionMode="AttributeFree" name="file" optional="false" type="rstring">
-          <description>Name of the source file</description>
+          <description>Path of the definition's file</description>
         </parameter>
-        <parameter cardinality="1" expressionMode="Attribute" name="frame" optional="true">
-          <description>attribute name of the list of subframe</description>
+        <parameter cardinality="1" expressionMode="Attribute" name="message" optional="false">
+          <description>attribute name that contains the message to parse</description>
+        </parameter>
+        <parameter cardinality="1" expressionMode="Attribute" name="identifier" optional="true">
+          <description>attribute name that contains the identifier if the identifier is not part of the message itself</description>
         </parameter>
         <inputPort minNumPorts="0" optional="true" windowPunctInputMode="WindowBound">
           <windowPolicy>OptionallyWindowed</windowPolicy>
         </inputPort>
         <outputPort expressionMode="Expression" minNumPorts="0" optional="true" windowPunctOutputMode="Generating"/>
       </primitiveOp>
-      <type column="8" line="3" name="ExtractedParameter" static="true" type="rstring frameName, uint8 subFrameIndex, rstring subFrameName, rstring packetName, rstring packetDescription, rstring packetFormat, float64 packetFactor, float64 packetOffset, float64 packetLimit, rstring packetUnit, rstring packetBinaryString" uriIndex="1"/>
+      <type column="6" line="3" name="Parameter" static="true" type="rstring objectName, rstring messageName, rstring messageDescription, rstring parameterName, rstring parameterDescription, rstring parameterFormat, float32 parameterFactor, float32 parameterOffset, float32 parameterLimit, rstring parameterUnit, rstring parameterBinaryString" uriIndex="1"/>
     </namespace>
     <namespace name="com.ibm.streamsx.bytes.conversion">
       <function modelUriIndex="3" name="decodeBase64" native="true" public="true" returnType="rstring" uriIndex="0">
@@ -63,6 +66,11 @@
       <function modelUriIndex="3" name="convertFromBinaryToHex" native="true" public="true" returnType="rstring" uriIndex="0">
         <description>Function that convert an Binary string into an Hex string</description>
         <prototype>public rstring convertFromBinaryToHex(rstring)</prototype>
+        <parameter name="__p1" type="rstring"/>
+      </function>
+      <function modelUriIndex="3" name="reverseBinaryString" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Function that convert an Binary string into an Hex string</description>
+        <prototype>public rstring reverseBinaryString(rstring)</prototype>
         <parameter name="__p1" type="rstring"/>
       </function>
     </namespace>

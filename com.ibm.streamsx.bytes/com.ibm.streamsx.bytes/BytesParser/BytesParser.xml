@@ -48,7 +48,7 @@
       <allowAny>false</allowAny>
       <parameter>
         <name>file</name>
-        <description>Name of the source file</description>
+        <description>Path of the definition's file</description>
         <optional>false</optional>
         <rewriteAllowed>true</rewriteAllowed>
         <expressionMode>AttributeFree</expressionMode>
@@ -56,8 +56,16 @@
         <cardinality>1</cardinality>
       </parameter>
       <parameter>
-        <name>frame</name>
-        <description>attribute name of the list of subframe</description>
+        <name>message</name>
+        <description>attribute name that contains the message to parse</description>
+        <optional>false</optional>
+        <rewriteAllowed>true</rewriteAllowed>
+        <expressionMode>Attribute</expressionMode>
+        <cardinality>1</cardinality>
+      </parameter>
+      <parameter>
+        <name>identifier</name>
+        <description>attribute name that contains the identifier if the identifier is not part of the message itself</description>
         <optional>true</optional>
         <rewriteAllowed>true</rewriteAllowed>
         <expressionMode>Attribute</expressionMode>

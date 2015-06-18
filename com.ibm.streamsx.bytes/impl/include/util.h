@@ -32,77 +32,77 @@ static map<char, string> HexToBin =  boost::assign::map_list_of
 /*
  * Reverse bitset 'bits'
  */
-template<size_t T>
-bitset<T> Reverse(const bitset<T> &bits) {
-	SPLAPPTRC(L_DEBUG, "Reverse bitset : " << bits.to_string(), SPL_OPER_DBG);
-	bitset<T> out;
-	for (size_t i = 0; i < T; i++)
-		out[(T-1) - i] = bits[i];
-	return out;
-}
+//template<size_t T>
+//bitset<T> Reverse(const bitset<T> &bits) {
+//	SPLAPPTRC(L_DEBUG, "Reverse bitset : " << bits.to_string(), SPL_OPER_DBG);
+//	bitset<T> out;
+//	for (size_t i = 0; i < T; i++)
+//		out[(T-1) - i] = bits[i];
+//	return out;
+//}
 
 /*
  * Rotate left the bitset 'x' by 'shift' bits
  */
-template<size_t T>
-bitset<T> ROL(bitset<T> x, unsigned int shift){
-  	assert(shift <= (T/2));
-  	//Twice the size of the bitset to keep bits moved outside
-	bitset<T*2> l(x.to_string());
-	bitset<T*2> r;
-	//Shift
-	l=(l << shift);
-	//Get moved bits
-	r=(l >> (x.size()));
-	//OR shift bits and moved bits + move result to reduce the bitset's size
-	bitset<T> out(((l| r) << (x.size())).to_string());
-  return  out;
-}
+//template<size_t T>
+//bitset<T> ROL(bitset<T> x, unsigned int shift){
+//  	assert(shift <= (T/2));
+//  	//Twice the size of the bitset to keep bits moved outside
+//	bitset<T*2> l(x.to_string());
+//	bitset<T*2> r;
+//	//Shift
+//	l=(l << shift);
+//	//Get moved bits
+//	r=(l >> (x.size()));
+//	//OR shift bits and moved bits + move result to reduce the bitset's size
+//	bitset<T> out(((l| r) << (x.size())).to_string());
+//  return  out;
+//}
 
 /*
  * Rotate right the bitset 'x' by 'shift' bits
  */
-template<size_t T>
-bitset<T> ROR(bitset<T> x, unsigned int shift){
-  	assert(shift <= (T/2));
-  	//Twice the size of the bitset to keep bits moved outside
-	bitset<T*2> l(x.to_string());
-	bitset<T*2> r;
-	//Move bits to the left to being able to shift right and keep moved bits
-	l=(l << (x.size()));
-	//Shift
-	l=(l >> shift);
-	//Get moved bits
-	r=(l << (x.size()));
-	//OR shift bits and moved bits
-	bitset<T> out((l| r).to_string());
-  return  out;
-}
+//template<size_t T>
+//bitset<T> ROR(bitset<T> x, unsigned int shift){
+//  	assert(shift <= (T/2));
+//  	//Twice the size of the bitset to keep bits moved outside
+//	bitset<T*2> l(x.to_string());
+//	bitset<T*2> r;
+//	//Move bits to the left to being able to shift right and keep moved bits
+//	l=(l << (x.size()));
+//	//Shift
+//	l=(l >> shift);
+//	//Get moved bits
+//	r=(l << (x.size()));
+//	//OR shift bits and moved bits
+//	bitset<T> out((l| r).to_string());
+//  return  out;
+//}
 
 /*
 * get N bits from bitset
 */
-template<size_t T>
-bitset<T> getBits(const bitset<T> &bits,const size_t start,const size_t len,bool LSB) {
-	//Double check that we will deal with T bits
-  	assert(len <= T);
-  	assert(start + len <= T);
-
-  	bitset<T> result;
-  	bitset<T> input;
-  	if(LSB)
-  		input=Reverse(bits);
-  	else
-  		input=bits;
-  	for (size_t i = 0; i < len; i++){
-//  		if(LSB){
-//  			result[i] = bits[start + len - i - 1]; 	//LSB : left to right
-//  		}else{
-  	    	result[i] = input[start + i - 1];		//MSB : right to left
-//  		}
-    }
-  	return result;
-}
+//template<size_t T>
+//bitset<T> getBits(const bitset<T> &bits,const size_t start,const size_t len,bool LSB) {
+//	//Double check that we will deal with T bits
+//  	assert(len <= T);
+//  	assert(start + len <= T);
+//
+//  	bitset<T> result;
+//  	bitset<T> input;
+//  	if(LSB)
+//  		input=Reverse(bits);
+//  	else
+//  		input=bits;
+//  	for (size_t i = 0; i < len; i++){
+////  		if(LSB){
+////  			result[i] = bits[start + len - i - 1]; 	//LSB : left to right
+////  		}else{
+//  	    	result[i] = input[start + i - 1];		//MSB : right to left
+////  		}
+//    }
+//  	return result;
+//}
 
 static const string base64_chars ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
