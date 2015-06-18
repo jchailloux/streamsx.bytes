@@ -3,7 +3,7 @@ streamsx.bytes
 
 This toolkit provides
 
-	Functions to manipulate data operator to parse a message and extract bits from it based on a JSON definition
+	Functions to manipulate data and an operator to parse a message and extract bits from it based on a JSON definition
 
 		Conversion
 			decodeBase64			: Decode a base64 string
