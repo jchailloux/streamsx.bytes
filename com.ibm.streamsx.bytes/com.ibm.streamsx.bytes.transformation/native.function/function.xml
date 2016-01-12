@@ -18,7 +18,7 @@
       </function:function>
       <function:function>
         <function:description>Get the Value(float64) from a binary string using formula (y=factor * x + offset) where offset is an adjustement where limit is set</function:description>
-        <function:prototype>public float64 getValueFromBinaryString(rstring,rstring,float64,float64,float64)</function:prototype>
+        <function:prototype>public float64 getValueFromBinaryString(rstring,rstring,float32,float32,float32)</function:prototype>
       </function:function>
 
       <function:function>

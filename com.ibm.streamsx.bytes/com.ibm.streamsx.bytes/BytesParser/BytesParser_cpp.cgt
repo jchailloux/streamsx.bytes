@@ -465,20 +465,47 @@ void MY_OPERATOR::process(Tuple & tuple, uint32_t port)
 						/*
 						 * Need to extract the byte, rotate, reduce
 						 */
-						
+						boost::dynamic_bitset<> byte;
+					    byte=(binary>>(binary.size()-(object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].byteNumber*object.messages[messageCounter].byteContainerLength)));
+						byte.resize(object.messages[messageCounter].byteContainerLength);
+						SPLAPPTRC(L_DEBUG,"byte extracted : "<< byte, SPL_OPER_DBG);
 						/*
-						 * Extract bits from the byte
+						 * Rotate the byte to make it "BigEndian"
 						 */
-						boost::dynamic_bitset<> extracted;
-					    extracted=(binary>>(binary.size()-(object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].start+object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].length)));
-						extracted.resize(object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].length);
+						if(!object.messages[messageCounter].endianness){
+							byte=	(byte >> (byte.size()-(object.messages[messageCounter].byteContainerLength/2))) | (byte << (object.messages[messageCounter].byteContainerLength/2));
+							SPLAPPTRC(L_DEBUG,"byte rotated : "<< byte, SPL_OPER_DBG);
+						}
+								
+						boost::dynamic_bitset<> reduced(byte);
+//						reduced=	(byte >> (byte.size()-(object.messages[messageCounter].byteLength))) | (byte << (byte.size()-(object.messages[messageCounter].byteLength)));
+//						reduced=	(byte >> (byte.size()-(object.messages[messageCounter].byteLength))) | (byte << (byte.size()-(object.messages[messageCounter].byteLength)));
+						SPLAPPTRC(L_DEBUG,"byte moved befor resize : "<< reduced, SPL_OPER_DBG);
+						reduced.resize(object.messages[messageCounter].byteLength);
+						SPLAPPTRC(L_DEBUG,"byte resized : "<< reduced, SPL_OPER_DBG);
 						/*
 						 * If MSB on the right (LittleEndian) reverse bits to make it BigEndian 
 						 */
 						if(!object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].endianness){
-							reverseBinary(extracted);
+							reverseBinary(reduced);
+							SPLAPPTRC(L_DEBUG,"bits extracted reversed : "<< reduced, SPL_OPER_DBG);
 						}
-						SPLAPPTRC(L_DEBUG,"Extracted : "<< extracted<< " , "<< extracted.to_ulong(), SPL_OPER_DBG);
+						/*
+						 * Extract bits from the byte
+						 */
+						boost::dynamic_bitset<> extracted(reduced);
+						/*
+						 * Compute how many bits we have to move to have the value
+						 */
+						int move = object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].start+object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].length;
+						if(move == extracted.size())
+							move = object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].length;
+						/*
+						 * Move bits and resize
+						 */
+					    extracted=(extracted>>(extracted.size()-move));
+						extracted.resize(object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].length);
+						SPLAPPTRC(L_DEBUG,"bits extracted : "<< extracted, SPL_OPER_DBG);
 						otuple.set_parameterName( object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].name);
 						otuple.set_parameterDescription( object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].description);
 						otuple.set_parameterFormat( object.messages[messageCounter].multiplex[multiplexCounter].parameters[parameterCounter].format);
