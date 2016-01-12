@@ -92,12 +92,12 @@
       </function>
       <function modelUriIndex="4" name="getValueFromBinaryString" native="true" public="true" returnType="float64" uriIndex="0">
         <description>Get the Value(float64) from a binary string using formula (y=factor * x + offset) where offset is an adjustement where limit is set</description>
-        <prototype>public float64 getValueFromBinaryString(rstring,rstring,float64,float64,float64)</prototype>
+        <prototype>public float64 getValueFromBinaryString(rstring,rstring,float32,float32,float32)</prototype>
         <parameter name="__p1" type="rstring"/>
         <parameter name="__p2" type="rstring"/>
-        <parameter name="__p3" type="float64"/>
-        <parameter name="__p4" type="float64"/>
-        <parameter name="__p5" type="float64"/>
+        <parameter name="__p3" type="float32"/>
+        <parameter name="__p4" type="float32"/>
+        <parameter name="__p5" type="float32"/>
       </function>
       <function modelUriIndex="4" name="rotateLeft" native="true" public="true" returnType="rstring" uriIndex="0">
         <description>Rotate left a binary string</description>
