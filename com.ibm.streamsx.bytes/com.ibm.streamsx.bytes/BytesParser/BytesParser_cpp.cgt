@@ -8,6 +8,7 @@
 <%
 use BytesParserCommon;
 BytesParserCommon::Init($model);
+my $isInConsistentRegion = $model->getContext()->getOptionalContext("ConsistentRegion");
 #Need to check if the output schema is ExtractedParameter
 %>
 
@@ -86,7 +87,7 @@ void readMultiplexDef(MultiplexDef &multiplex,json_t *element){
 	SPLAPPTRC(L_TRACE, "<-readMultiplexDef", SPL_OPER_DBG);
 }
 
-void readMessageDef(json_t *element){
+void readMessageDef(ObjectDef &o,json_t *element){
 	SPLAPPTRC(L_TRACE, "->readMessageDef", SPL_OPER_DBG);
 	json_t *value;
     const char *key;
@@ -140,10 +141,10 @@ void readMessageDef(json_t *element){
         }
 	}
 //    readPacketLevel(message,packet);
-    object.messages.push_back(message);
+    o.messages.push_back(message);
 	SPLAPPTRC(L_TRACE, "<-readMessageDef", SPL_OPER_DBG);
 }
-void readDictionnaryDef(json_t *element){
+void readDictionnaryDef(ObjectDef &o,json_t *element){
 	SPLAPPTRC(L_TRACE, "->readDictionnaryDef", SPL_OPER_DBG);
 	json_t *value;
     const char *key;
@@ -156,22 +157,22 @@ void readDictionnaryDef(json_t *element){
         if(strcmp(key,"binary") ==0){
         	v=json_string_value(value);
         }
-        object.dictionnary[k.c_str()[0]]=v;
+        o.dictionnary[k.c_str()[0]]=v;
     }
 	SPLAPPTRC(L_TRACE, "<-readDictionnaryDef", SPL_OPER_DBG);
 }
 
-void readObjectDef(json_t *element){
+void readObjectDef(ObjectDef &o,json_t *element){
 	SPLAPPTRC(L_TRACE, "->readObjectDef", SPL_OPER_DBG);
 	json_t *value;
     const char *key;
     json_object_foreach(element, key, value) {
         if(strcmp(key,"Object") ==0){
         	SPLAPPTRC(L_DEBUG, "Object found", SPL_OPER_DBG);
-        	readObjectDef(value);
+        	readObjectDef(o,value);
         }
         if(strcmp(key,"name") ==0){
-        	object.name = json_string_value(value);
+        	o.name = json_string_value(value);
 
         }
         if(strcmp(key,"messages") ==0){
@@ -181,7 +182,7 @@ void readObjectDef(json_t *element){
 
         	size_t size = json_array_size(value);
 	        for (size_t i = 0; i < size; i++) {
-	        	readMessageDef(json_array_get(value, i));
+	        	readMessageDef(o,json_array_get(value, i));
 			}
         }
         if(strcmp(key,"dictionnary") ==0){
@@ -191,7 +192,7 @@ void readObjectDef(json_t *element){
 
         	size_t size = json_array_size(value);
 	        for (size_t i = 0; i < size; i++) {
-	        	readDictionnaryDef(json_array_get(value, i));
+	        	readDictionnaryDef(o,json_array_get(value, i));
 			}
         }
 	}
@@ -214,9 +215,9 @@ void printParameterDef(ParameterDef p,string indent){
 	SPLAPPTRC(L_DEBUG, indent <<" offset : "<< p.offset, SPL_OPER_DBG);
 	SPLAPPTRC(L_DEBUG,  indent <<" limit : "<< p.limit, SPL_OPER_DBG);
 }
-void printDictionnaryDef(){
+void printDictionnaryDef(ObjectDef &o){
 	SPLAPPTRC(L_DEBUG,  "--------Dictionnary-------- ", SPL_OPER_DBG);
-    for ( std::map< char, string, std::less< int > >::const_iterator iter = object.dictionnary.begin();iter != object.dictionnary.end(); ++iter )
+    for ( std::map< char, string, std::less< int > >::const_iterator iter = o.dictionnary.begin();iter != o.dictionnary.end(); ++iter )
     	SPLAPPTRC(L_DEBUG, "\t"<< iter->first << "\t-->\t" << iter->second , SPL_OPER_DBG);
 }
 void printMultiplexDef(MultiplexDef multiplex,string indent){
@@ -244,15 +245,15 @@ void printMessageDef(MessageDef message,string indent){
 	}
 
 }
-void printObjectDef(){
-	SPLAPPTRC(L_DEBUG,  "Object : " << object.name, SPL_OPER_DBG);
-	SPLAPPTRC(L_DEBUG, "Number of messages : " << object.messages.size(), SPL_OPER_DBG);
-	for(unsigned int i=0; i < object.messages.size(); i++){
-		printMessageDef( object.messages[i],"\t");
+void printObjectDef(ObjectDef &o){
+	SPLAPPTRC(L_DEBUG,  "Object : " << o.name, SPL_OPER_DBG);
+	SPLAPPTRC(L_DEBUG, "Number of messages : " << o.messages.size(), SPL_OPER_DBG);
+	for(unsigned int i=0; i < o.messages.size(); i++){
+		printMessageDef( o.messages[i],"\t");
 	}
-	printDictionnaryDef();
+	printDictionnaryDef(o);
 }
-void loadExtractorSchema(string fileName){
+void loadExtractorSchema(ObjectDef &o,string fileName){
 	SPLAPPTRC(L_TRACE, "->loadExtractorSchema", SPL_OPER_DBG);
     ready=false;
 	json_t *value;
@@ -263,8 +264,8 @@ void loadExtractorSchema(string fileName){
 		return;
 	}
 	SPLAPPTRC(L_DEBUG, "JSON read", SPL_OPER_DBG);
-	readObjectDef(value);
-	printObjectDef();
+	readObjectDef(o,value);
+	printObjectDef(o);
     ready=true;
 	SPLAPPTRC(L_TRACE, "<-loadExtractorSchema", SPL_OPER_DBG);
 }
@@ -283,7 +284,7 @@ void reverseBinary(boost::dynamic_bitset<> &to){
 MY_OPERATOR::MY_OPERATOR()
 {
     // Initialization code goes here
-	loadExtractorSchema(<%=$::file->getValueAt(0)->getSPLExpression()%>);
+	loadExtractorSchema(object,<%=$::file->getValueAt(0)->getSPLExpression()%>);
 }
 
 // Destructor
@@ -560,4 +561,29 @@ void MY_OPERATOR::process(Punctuation const & punct, uint32_t port)
     */
 }
 
+<%if ($isInConsistentRegion) {%>
+void MY_OPERATOR::checkpoint(Checkpoint & ckpt)
+{
+// TODO: persist state when called.
+SPLAPPTRC(L_TRACE, "Checkpoint: " << ckpt.getSequenceId(), "CONSISTENT");
+}
+void MY_OPERATOR::reset(Checkpoint & ckpt)
+{
+// TODO: Restore state from checkpoint when called
+SPLAPPTRC(L_TRACE, "Reset: " << ckpt.getSequenceId(), "CONSISTENT");
+}
+void MY_OPERATOR::resetToInitialState()
+{
+// TODO: Reset to operator initial state when called
+SPLAPPTRC(L_TRACE, "Reset to Initial State. ", "CONSISTENT");
+// may have to undo any state changes during the processing
+}
+void MY_OPERATOR::drain() {
+// TODO: Drain operator
+SPLAPPTRC(L_TRACE, "Drain Operator", "CONSISTENT");
+}
+void MY_OPERATOR::retireCheckpoint(int64_t id) {
+SPLAPPTRC(L_TRACE, "Retire Checkpoint: " << id, "CONSISTENT");
+}
+<%}%>
 <%SPL::CodeGen::implementationEpilogue($model);%>

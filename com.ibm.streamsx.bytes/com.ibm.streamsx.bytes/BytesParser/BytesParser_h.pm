@@ -15,7 +15,13 @@ sub main::generate($$) {
    print '#include <string.h>', "\n";
    print '#include <vector>', "\n";
    print '#define NUMBER_OF_BIT_PER_CHAR 4', "\n";
-   SPL::CodeGen::headerPrologue($model);
+   my $isInConsistentRegion =
+   $model->getContext()->getOptionalContext("ConsistentRegion");
+   my @includes;
+   if ($isInConsistentRegion) {
+   push @includes, "#include <SPL/Runtime/Operator/State/StateHandler.h>";
+   }
+   SPL::CodeGen::headerPrologue($model, \@includes);
    print "\n";
    print 'using namespace std;', "\n";
    print "\n";
@@ -69,6 +75,11 @@ sub main::generate($$) {
    print '		std::map<char, string> dictionnary;', "\n";
    print '};', "\n";
    print 'class MY_OPERATOR : public MY_BASE_OPERATOR ', "\n";
+   if ($isInConsistentRegion) {
+   print "\n";
+   print ', StateHandler', "\n";
+   }
+   print "\n";
    print '{', "\n";
    print 'public:', "\n";
    print '  // Constructor', "\n";
@@ -94,12 +105,32 @@ sub main::generate($$) {
    print "\n";
    print '  // Punctuation processing', "\n";
    print '  void process(Punctuation const & punct, uint32_t port);', "\n";
-   print 'private:', "\n";
+   print '  ';
+   if ($isInConsistentRegion) {
+   print "\n";
+   print '  // Callbacks from StateHandler.h', "\n";
+   print '  virtual void checkpoint(Checkpoint & ckpt);', "\n";
+   print '  virtual void reset(Checkpoint & ckpt);', "\n";
+   print '  virtual void resetToInitialState();', "\n";
+   print '  virtual void drain();', "\n";
+   print '  virtual void retireCheckpoint(int64_t id);', "\n";
+   print '  ';
+   }
+   print "\n";
+   print '  private:', "\n";
    print '  // Members', "\n";
+   print '  ';
+   if ($isInConsistentRegion) {
+   print "\n";
+   print '  ConsistentRegionContext *_crContext;', "\n";
+   print '  ';
+   }
    print '  ', "\n";
    print '}; ', "\n";
    print "\n";
    print 'ObjectDef object;', "\n";
+   print 'ObjectDef newObject;', "\n";
+   print "\n";
    print 'bool ready;', "\n";
    SPL::CodeGen::headerEpilogue($model);
    print "\n";
