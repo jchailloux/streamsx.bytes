@@ -6,7 +6,15 @@
 #include <string.h>
 #include <vector>
 #define NUMBER_OF_BIT_PER_CHAR 4
-<%SPL::CodeGen::headerPrologue($model);%>
+<%
+my $isInConsistentRegion =
+$model->getContext()->getOptionalContext("ConsistentRegion");
+my @includes;
+if ($isInConsistentRegion) {
+push @includes, "#include <SPL/Runtime/Operator/State/StateHandler.h>";
+}
+SPL::CodeGen::headerPrologue($model, \@includes);
+%>
 using namespace std;
 
 
@@ -59,6 +67,9 @@ class ObjectDef{
 		std::map<char, string> dictionnary;
 };
 class MY_OPERATOR : public MY_BASE_OPERATOR 
+<%if ($isInConsistentRegion) {%>
+, StateHandler
+<%}%>
 {
 public:
   // Constructor
@@ -84,11 +95,23 @@ public:
 
   // Punctuation processing
   void process(Punctuation const & punct, uint32_t port);
-private:
+  <%if ($isInConsistentRegion) {%>
+  // Callbacks from StateHandler.h
+  virtual void checkpoint(Checkpoint & ckpt);
+  virtual void reset(Checkpoint & ckpt);
+  virtual void resetToInitialState();
+  virtual void drain();
+  virtual void retireCheckpoint(int64_t id);
+  <%}%>
+  private:
   // Members
-  
+  <%if ($isInConsistentRegion) {%>
+  ConsistentRegionContext *_crContext;
+  <%}%>  
 }; 
 
 ObjectDef object;
+ObjectDef newObject;
+
 bool ready;
 <%SPL::CodeGen::headerEpilogue($model);%>
