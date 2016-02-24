@@ -1,0 +1,69 @@
+namespace com.ibm.streamsx.bytes.sample;
+use com.ibm.streamsx.bytes::* ;
+
+composite Ais{
+	type
+		AIS_RAW=
+			rstring AIVDM
+			,rstring fragmentCount
+			,rstring fragmentNumber
+			,rstring messageID
+			,rstring radioChannel
+			,rstring data
+			,rstring fillBits;
+	graph
+	/** Read data from file		
+		*/
+		stream<AIS_RAW> Input = FileSource()
+		{
+			param
+				file : "nmea-sample" ;
+		}
+
+		(
+			stream<Input, Parameter> ExtractedData;
+			stream<Input> UnextractedData
+		)=BytesParser(Input){
+				param
+					file :getThisToolkitDir()+"/etc/ais_binary.json" ;
+					message : data ;
+			}
+
+		stream<ExtractedData, tuple<float64 result>> DataComputed = Functor(ExtractedData){
+				output
+					DataComputed : result =(float64)
+						com.ibm.streamsx.bytes.transformation::getValueFromBinaryString(parameterBinaryString,
+						parameterFormat, parameterFactor, parameterOffset, parameterLimit) ;
+			}
+		stream<uint8 beat> Beat=Beacon(){
+			param
+				period:1.0;
+			output Beat:beat=1ub;
+		}
+		
+		() as A=Custom(DataComputed;UnextractedData;Beat){
+			logic
+				state:{
+					mutable uint64 knownCount=0;
+					mutable uint64 knownCountall=0;
+					mutable uint64 unknownCount=0;
+					mutable uint64 unknownCountall=0;
+				}
+				onPunct DataComputed:{
+					knownCount++;
+				}
+				onPunct UnextractedData:{
+					unknownCount++;
+				}
+				onTuple Beat:{
+					knownCountall+=knownCount;
+					unknownCountall+=unknownCount;
+					printStringLn("Known : Total : "+(rstring)knownCountall+" last second : "+(rstring)knownCount);
+					printStringLn("unknown : Total : "+(rstring)unknownCountall+" last second : "+(rstring)unknownCount);
+					knownCount=0ul;
+					unknownCount=0ul;
+				}
+		}
+	}
+
+
